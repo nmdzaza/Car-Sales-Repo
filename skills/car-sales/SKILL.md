@@ -47,6 +47,10 @@ Read the relevant reference file based on what the associate needs:
 | Pulling car details from a website link | `references/car-package.md` |
 | Lead responded — now what to send back | `references/follow-up.md` |
 | Setting up a new dealership's profile and training the team | `references/dealership-setup.md` |
+| Importing a list of leads (paste, CSV, or file) | `references/lead-import.md` |
+| Viewing pipeline, follow-ups due, or lead status | `references/lead-tracker.md` |
+| Logging a sent message to the CRM file | `references/lead-tracker.md` |
+| Updating a lead status (responded, appointment, sold) | `references/lead-tracker.md` |
 
 ---
 
@@ -106,3 +110,42 @@ Never skip the iMessage confirmation step.
 **Warm/hot leads get the full package.** Car details, financing options, trade-in prompt, and a clear next step (book a test drive, apply online, call the lot).
 
 **End every message with one clear action.** Not two options — one. "Reply YES to schedule your test drive." "Click this link to see full details." "Call me at [number] and I'll hold it for you today."
+
+---
+
+## Lead Tracker (Auto-CRM)
+
+Every lead interaction is automatically logged to `~/car-sales-leads/leads.csv`.
+
+**Auto-log triggers:**
+- Every time an email send is confirmed by the associate → log immediately
+- Every time an iMessage is sent → log immediately
+- Every time a new lead is added via import → log with Status = NEW
+
+**At the start of every session:**
+1. Check if `~/car-sales-leads/leads.csv` exists
+2. If it does, scan for follow-ups due today and surface them first
+3. If it doesn't exist, create it with the header row on first log
+
+**Follow the full logging and pipeline rules in `references/lead-tracker.md`.**
+
+---
+
+## Lead Import
+
+When the associate says they have a list of leads (any size), enters batch mode, pastes a list, or references a file:
+
+1. Read `references/lead-import.md`
+2. Accept any input format (paste, CSV path, CRM export, manual entry)
+3. Auto-categorize leads as HOT / WARM / DEAD / PAID
+4. Show the categorization for associate to confirm
+5. Run batch outreach mode — one lead at a time, draft → approve → send → log
+
+**Quick import triggers:**
+- "I have [N] leads" → batch import mode
+- "import leads" → ask for paste, file path, or tracker pull
+- "work my dead leads" → pull DEAD/DORMANT from existing tracker
+- "show my pipeline" → display full lead tracker summary
+- "add a lead: [info]" → single lead intake directly to tracker
+
+**Follow the full import and batch outreach rules in `references/lead-import.md`.**

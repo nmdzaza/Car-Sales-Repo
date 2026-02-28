@@ -53,3 +53,31 @@ Once you have the lead info and car details:
 2. Show the full draft for review
 3. Wait for associate to approve or edit
 4. Send via iMessage tool (text) or Gmail draft (email)
+5. **Auto-log to tracker** — immediately after send is confirmed, write the lead entry to `~/car-sales-leads/leads.csv` per `references/lead-tracker.md`
+6. Confirm the log to the associate and show the next follow-up date
+
+## Single Lead Quick-Add
+
+If the associate says "add a lead" or drops in contact info without going through full intake:
+
+Accept any of these formats:
+```
+add a lead: Marcus James 954-555-0101 youngtrappy4@gmail.com BMW i7
+```
+```
+new lead: Derrick Brown, 786-555-0202, interested in X5
+```
+```
+lead: Tasha Grant tasha@gmail.com dead lead from 6 months ago
+```
+
+Parse whatever is given, fill in what's missing with defaults:
+- Lead Type: HOT (default unless context says otherwise)
+- Car: ask once if not provided and no default inventory URL is set
+- Phone/Email: use whatever is provided — don't require both
+
+Add to `leads.csv` with Status = NEW, then immediately ask:
+```
+✅ Tasha Grant added to your tracker.
+Want to send outreach now? (yes / skip for now)
+```
