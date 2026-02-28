@@ -1,0 +1,10 @@
+{
+  "name": "car-sales",
+  "version": "1.0.0",
+  "description": "Full AI system for car dealership sales associates. Handles hot, warm, dead, and paid leads — builds personalized outreach, pulls car specs from dealer links, and drafts iMessage and email for review before sending.",
+  "author": {
+    "name": "nmdzaza",
+    "email": "camjohn816@gmail.com"
+  },
+  "keywords": ["dealership", "car sales", "lead management", "outreach", "automotive"]
+}
