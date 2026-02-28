@@ -87,93 +87,178 @@ When are you free to come see it? I can get you in and out quick — I know your
 
 ## Email Templates
 
-Use email as the follow-up to iMessage OR as the primary channel if that's what the lead prefers. Email allows for more detail and lets you include the full car info package in the body.
+Use email as the follow-up to iMessage OR as the primary channel if that's what the lead prefers. All emails are sent as **HTML via Gmail draft** — always create the draft first, then prompt the associate to send it and confirm back.
 
-### HOT LEAD — Email
+---
 
+### IMAGE RULES FOR ALL EMAILS
+
+**Step 1 — Get the real image URL from the listing page:**
+When fetching car specs, also look for the vehicle photo URL hosted on the dealer's own domain (e.g., `chapmanbmwchandler.com/...`). Copy that exact URL.
+
+**Step 2 — Embed it correctly:**
+```html
+<a href="[CAR LISTING URL]" target="_blank">
+  <img src="[DEALER-HOSTED IMAGE URL]"
+       alt="[YEAR] [MAKE] [MODEL] [TRIM]"
+       width="620"
+       style="display:block; width:100%; border:none;" />
+</a>
 ```
-Subject: Your [YEAR] [MAKE] [MODEL] is Ready — [DEALERSHIP]
 
-Hi [FIRST NAME],
-
-I'm [SALESPERSON] at [DEALERSHIP] and I wanted to personally follow up on your interest in the [YEAR] [MAKE] [MODEL].
-
-I pulled everything together for you so you don't have to hunt for it:
-
-─────────────────────────────
-VEHICLE DETAILS
-─────────────────────────────
-Year / Make / Model: [YEAR] [MAKE] [MODEL] [TRIM]
-Mileage: [MILEAGE]
-Price: [PRICE]
-Color: [COLOR]
-VIN: [VIN if available]
-
-Key Features:
-• [FEATURE 1]
-• [FEATURE 2]
-• [FEATURE 3]
-• [FEATURE 4]
-
-View full listing: [CAR LINK]
-
-─────────────────────────────
-FINANCING OPTIONS
-─────────────────────────────
-We partner with [FINANCING PARTNER 1] and [FINANCING PARTNER 2] to get you competitive rates. Estimated payment based on [EXAMPLE TERM]:
-
-• 60 months @ ~[RATE]% APR ≈ $[EST PAYMENT]/mo (with approved credit)
-• We work with all credit situations — good, fair, or rebuilding
-
-Apply online here: [FINANCE LINK if available]
-
-─────────────────────────────
-TRADE-IN
-─────────────────────────────
-If you have a vehicle to trade, now is a great time — values are strong. Get your estimate here: [TRADE-IN LINK]
-
-Bring it in and we'll apply the value directly to your deal.
-
-─────────────────────────────
-NEXT STEP
-─────────────────────────────
-Reply to this email or call/text me directly at [PHONE] and I'll have the car ready for a test drive at your convenience. I can hold it for 24 hours with a simple confirmation.
-
-Looking forward to hearing from you,
-
-[SALESPERSON NAME]
-[DEALERSHIP NAME]
-[PHONE] | [EMAIL]
-[WEBSITE]
+**Rules:**
+- ✅ Use image URLs from the dealer's own domain only
+- ❌ Never use third-party CDN URLs (e.g., `images.dealer.com`, `dealereprocess.com`, `dealercarsearch.com`) — these are blocked by Gmail and most email clients
+- ❌ Never hotlink manufacturer press images — they block external requests
+- If no dealer-hosted image is found, replace with a bold styled header block instead:
+```html
+<div style="background:#000;padding:40px;text-align:center;">
+  <h1 style="color:#fff;font-size:28px;margin:0;">[YEAR] [MAKE] [MODEL]</h1>
+  <p style="color:#aaa;font-size:14px;margin-top:8px;">[TRIM] &nbsp;|&nbsp; [COLOR]</p>
+</div>
 ```
 
 ---
 
-### DEAD LEAD — Re-engagement Email
+### HOT LEAD — HTML Email Template
+
+Build this as a full HTML email. Fill all `[BRACKETS]` with real data before creating the Gmail draft.
+
+```html
+<!DOCTYPE html>
+<html>
+<body style="font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:0;">
+<div style="max-width:620px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;">
+
+  <!-- Header bar -->
+  <div style="background:#000;padding:18px 28px;">
+    <p style="color:#fff;font-size:12px;margin:0;letter-spacing:2px;text-transform:uppercase;">
+      [DEALERSHIP NAME] &nbsp;|&nbsp; [SALESPERSON NAME]
+    </p>
+  </div>
+
+  <!-- Car image — use dealer-hosted URL only. If unavailable, use the fallback header block above -->
+  <a href="[CAR LISTING URL]" target="_blank">
+    <img src="[DEALER-HOSTED IMAGE URL]"
+         alt="[YEAR] [MAKE] [MODEL] [TRIM]"
+         width="620"
+         style="display:block;width:100%;border:none;" />
+  </a>
+
+  <!-- Body -->
+  <div style="padding:28px;">
+    <h1 style="font-size:22px;color:#000;margin-top:0;">[YEAR] [MAKE] [MODEL] [TRIM]</h1>
+    <p style="color:#444;font-size:15px;line-height:1.7;">
+      Hey [FIRST NAME],<br><br>
+      It's <strong>[SALESPERSON]</strong> over at <strong>[DEALERSHIP]</strong>.
+      I pulled this together for you personally — this one's worth a serious look.
+    </p>
+
+    <!-- Specs table -->
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin:20px 0;">
+      <tr style="background:#f9f9f9;">
+        <td style="padding:10px;color:#888;width:40%;">Exterior</td>
+        <td style="padding:10px;color:#000;font-weight:bold;">[EXTERIOR COLOR]</td>
+      </tr>
+      <tr>
+        <td style="padding:10px;color:#888;">Interior</td>
+        <td style="padding:10px;color:#000;font-weight:bold;">[INTERIOR COLOR / MATERIAL]</td>
+      </tr>
+      <tr style="background:#f9f9f9;">
+        <td style="padding:10px;color:#888;">Engine</td>
+        <td style="padding:10px;color:#000;font-weight:bold;">[ENGINE / HP / DRIVETRAIN]</td>
+      </tr>
+      <tr>
+        <td style="padding:10px;color:#888;">Mileage</td>
+        <td style="padding:10px;color:#000;font-weight:bold;">[MILEAGE]</td>
+      </tr>
+      <tr style="background:#f9f9f9;">
+        <td style="padding:10px;color:#888;">MSRP</td>
+        <td style="padding:10px;color:#000;font-weight:bold;">[PRICE]</td>
+      </tr>
+      <tr>
+        <td style="padding:10px;color:#888;">Est. Payment</td>
+        <td style="padding:10px;color:#000;font-weight:bold;">[EST PAYMENT]/mo | [APR]% APR ([TERM] mo)</td>
+      </tr>
+      <tr style="background:#f9f9f9;">
+        <td style="padding:10px;color:#888;">VIN</td>
+        <td style="padding:10px;color:#000;font-weight:bold;">[VIN]</td>
+      </tr>
+    </table>
+
+    <!-- Key features -->
+    <h3 style="color:#000;font-size:16px;">What's On It:</h3>
+    <ul style="color:#444;font-size:14px;line-height:2.2;padding-left:20px;">
+      <li><strong>[PACKAGE / FEATURE 1]</strong> — [brief description]</li>
+      <li><strong>[PACKAGE / FEATURE 2]</strong> — [brief description]</li>
+      <li><strong>[PACKAGE / FEATURE 3]</strong> — [brief description]</li>
+      <li><strong>[PACKAGE / FEATURE 4]</strong></li>
+      <li><strong>[PACKAGE / FEATURE 5]</strong></li>
+    </ul>
+
+    <!-- Financing -->
+    <div style="background:#f4f4f4;border-left:4px solid #000;padding:14px 18px;margin:20px 0;font-size:14px;color:#444;">
+      We work with <strong>[FINANCING PARTNER 1]</strong> and <strong>[FINANCING PARTNER 2]</strong> —
+      I can get you pre-qualified today with no impact to your credit score.<br><br>
+      Got a trade? Check your value now:
+      <a href="https://www.kbb.com" style="color:#000;font-weight:bold;">kbb.com</a>
+      — I'll factor it into your numbers on the spot.
+    </div>
+
+    <!-- CTA button -->
+    <div style="text-align:center;margin:28px 0;">
+      <a href="[CAR LISTING URL]" target="_blank"
+         style="background:#000;color:#fff;text-decoration:none;padding:14px 36px;
+                border-radius:4px;font-size:15px;font-weight:bold;display:inline-block;">
+        👁 View Full Vehicle Details
+      </a>
+    </div>
+
+    <p style="color:#444;font-size:14px;line-height:1.9;">
+      Ready to make a move? Reply here or hit me directly:<br>
+      📞 <strong>[PHONE]</strong><br>
+      ✉️ [EMAIL]
+    </p>
+
+    <p style="color:#444;font-size:14px;">— [SALESPERSON]<br><strong>[DEALERSHIP]</strong></p>
+  </div>
+
+  <!-- Footer -->
+  <div style="background:#000;padding:14px 28px;text-align:center;">
+    <p style="color:#666;font-size:11px;margin:0;">
+      [DEALERSHIP] &nbsp;|&nbsp; [EMAIL] &nbsp;|&nbsp; [PHONE]
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
+```
+
+---
+
+### DEAD LEAD — Re-engagement HTML Email
+
+Same HTML structure as above. Change the body copy to:
 
 ```
-Subject: Still thinking about a new car? Quick update from [DEALERSHIP]
+Hey [FIRST NAME],
 
-Hi [FIRST NAME],
+[SALESPERSON] here from [DEALERSHIP]. It's been a while — I'm not reaching out to bug you, I promise.
 
-[SALESPERSON] here from [DEALERSHIP]. It's been a while since we connected and I just wanted to check in — no sales pitch, I promise.
+I just came across a [YEAR] [MAKE] [MODEL] that made me think of you. Figured I'd put it in front of you in case the timing is better now.
 
-I came across a [YEAR] [MAKE] [MODEL] that reminded me of what you were looking for. Thought I'd send it your way in case the timing is better now.
+[Use specs table + CTA button — same as hot lead template above]
 
-[CAR LINK]
+A couple things worth knowing:
+• Rates have shifted — I may be able to get you a better monthly than before
+• Trade-in values are holding strong right now — worth checking yours
+• We've got more flexible financing options than we did last time
 
-A few things that might have changed since we last talked:
-• Rates have shifted — we may be able to get you a better monthly payment now
-• Trade-in values for [TRADE-IN YEAR MAKE MODEL if known] are holding strong
-• We have more flexible financing options than before
+No pressure. If you're ready, I'm here. If not, no worries at all.
 
-If you're still in the market — even just casually browsing — I'm happy to help with no pressure. And if you've already found something, congratulations! Just let me know and I'll update your file.
-
-Either way, hope things are going well.
-
-[SALESPERSON NAME]
-[DEALERSHIP NAME]
-[PHONE] | [EMAIL]
+— [SALESPERSON]
+[DEALERSHIP] | [PHONE] | [EMAIL]
 ```
 
 ---

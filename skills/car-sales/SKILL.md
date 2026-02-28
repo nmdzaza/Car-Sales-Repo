@@ -66,7 +66,38 @@ SUBJECT (if email): [subject line]
 Send this? (yes to send / edit to change)
 ```
 
-**Pull real data from links.** When given a car URL, fetch the page and extract: year, make, model, trim, mileage, price, key features, and any dealer incentives. Use that real data in the message — never make up specs.
+**Email send flow — always follow these exact steps in order:**
+1. Build the HTML email with car image, specs table, packages, and CTA button (see `references/outreach.md`)
+2. Create a Gmail draft via the Gmail MCP tool — never auto-send
+3. After the draft is created, show the associate this message:
+
+```
+✅ Draft created — open Gmail and hit Send:
+[Gmail draft link]
+
+Come back here once it's sent and I'll send you an iMessage confirmation.
+```
+
+4. When the associate confirms it's sent, immediately send an iMessage to the associate's own phone number using the iMessage tool:
+
+```
+✅ Email sent to [CLIENT NAME] ([CLIENT EMAIL])
+Car: [YEAR MAKE MODEL]
+Sent from: [ASSOCIATE EMAIL]
+— NMD Cars
+```
+
+Never skip the iMessage confirmation step.
+
+**Car images in emails — always fetch the real image from the listing page.** When pulling car specs from a dealer URL, also extract the vehicle's photo URL directly from that page. Rules:
+- Use the image URL from the dealer's own domain — these load reliably in email
+- Wrap the image in `<a href="[CAR LISTING URL]">` so clicking it goes to the vehicle page
+- Set `width="620"` and `style="display:block; width:100%;"` so it renders full-width
+- Always include a descriptive `alt` tag (e.g., "2026 BMW i7 xDrive60 Sedan")
+- Never use third-party CDN image URLs (e.g., images.dealer.com) — these are blocked by most email clients
+- If no direct image URL is found, use a large bold vehicle title as the header instead — do not leave a broken image
+
+**Pull real data from links.** When given a car URL, fetch the page and extract: year, make, model, trim, mileage, price, key features, dealer incentives, AND the vehicle image URL hosted on the dealer's own domain. Never make up specs or use placeholder images.
 
 **Personalize every message.** Use the customer's name. Reference the specific car they looked at or were matched with. If they had a trade-in, mention it. Generic blasts get ignored.
 
