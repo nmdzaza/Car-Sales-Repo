@@ -1,66 +1,95 @@
 # Lead Tracker — Automated CRM Log
 
-Every time an email or iMessage is sent to a lead, a log entry is automatically written to the dealership's lead tracker file. This file acts as a running CRM — no manual entry needed.
+Every lead interaction is automatically logged to `~/car-sales-leads/leads.csv`. This is the live CRM — no manual entry needed.
 
 ---
 
 ## Tracker File Location
 
-The tracker lives at:
 ```
 ~/car-sales-leads/leads.csv
 ```
 
-If that file doesn't exist yet, create it automatically the first time a lead is logged. Always append — never overwrite.
+**If the file doesn't exist:** create it automatically using Desktop Commander `write_file` with just the header row, then append the first lead.
+
+**Always use Desktop Commander `read_file` before appending** to get the last ID number and avoid duplicates.
 
 ---
 
 ## CSV Column Structure
 
 ```
-ID,Date,Time,Lead Name,Phone,Email,Lead Type,Car Year,Car Make,Car Model,Car Trim,Car Price,VIN,Channel,Subject/Message Preview,Status,Next Follow-Up,Notes
+ID,Date,Time,Lead Name,Phone,Email,Lead Type,Car Year,Car Make,Car Model,Car Trim,Car Price,VIN,Stock#,Channel,Subject/Message Preview,Status,Next Follow-Up,Notes
 ```
 
 | Column | Description |
 |--------|-------------|
-| ID | Auto-increment (001, 002, 003...) |
-| Date | MM/DD/YYYY |
-| Time | HH:MM AM/PM |
-| Lead Name | Full name from intake |
+| ID | L001, L002, L003... (read last row to get next number) |
+| Date | YYYY-MM-DD |
+| Time | HH:MM (24hr) |
+| Lead Name | Full name |
 | Phone | Lead's phone number |
 | Email | Lead's email |
-| Lead Type | HOT / WARM / DEAD / PAID |
+| Lead Type | HOT / WARM / DEAD / PAID / BUYER-HUNT / SUBPRIME / CONQUEST |
 | Car Year | Year of vehicle |
 | Car Make | Make |
 | Car Model | Model |
 | Car Trim | Trim level |
-| Car Price | Listed price |
-| VIN | Vehicle Identification Number |
-| Channel | EMAIL / IMESSAGE / BOTH |
+| Car Price | Listed price (numbers only, no $) |
+| VIN | VIN if available |
+| Stock# | Stock number if available |
+| Channel | EMAIL / IMESSAGE / BOTH / REDDIT / TWITTER / PLATFORM |
 | Subject/Message Preview | Email subject line OR first 60 chars of iMessage |
-| Status | CONTACTED / RESPONDED / APPOINTMENT / SOLD / DORMANT / NO_RESPONSE |
-| Next Follow-Up | Date of next scheduled touch (from sequence) |
-| Notes | Any additional context (trade-in mentioned, financing question, etc.) |
+| Status | See Status Definitions below |
+| Next Follow-Up | YYYY-MM-DD of next scheduled touch |
+| Notes | Any context (trade-in, financing question, source URL, etc.) |
 
 ---
 
-## Auto-Log Rule
+## How to Write to leads.csv (EXACT STEPS)
 
-**Every time a send is confirmed (associate says "sent"), immediately:**
-
-1. Read the current `leads.csv` to get the last ID number
-2. Append a new row with all available fields filled in
-3. Confirm to the associate:
+### Adding a new lead:
 
 ```
-📋 Lead logged to tracker:
-   Lead: [NAME] | [EMAIL/PHONE]
-   Car: [YEAR MAKE MODEL]
-   Channel: [EMAIL/IMESSAGE]
-   Status: CONTACTED
-   Next follow-up: [DATE based on sequence — Day 5 from today]
-   File: ~/car-sales-leads/leads.csv
+1. Use Desktop Commander read_file on ~/car-sales-leads/leads.csv
+2. Find the last row's ID (e.g., L007)
+3. Increment by 1 (L008)
+4. Build the new CSV row with all columns filled
+5. Use Desktop Commander write_file in APPEND MODE on ~/car-sales-leads/leads.csv
+   - Mode: append
+   - Content: the new row as a single line ending with \n
+6. Confirm the log to the associate
 ```
+
+### Updating an existing lead's status:
+
+```
+1. Use Desktop Commander read_file on ~/car-sales-leads/leads.csv
+2. Find the row matching the lead name / email / ID
+3. Modify the Status column value in that row
+4. Update Notes if relevant
+5. Use Desktop Commander write_file in REWRITE MODE — write the ENTIRE file back
+   (header row + all rows, including the updated one)
+6. Confirm the update to the associate
+```
+
+**NEVER delete rows. NEVER skip the read step. NEVER guess the next ID.**
+
+---
+
+## Auto-Log Rule — What Triggers a Log Entry
+
+| Trigger | Status to Log |
+|---------|--------------|
+| Gmail draft created | DRAFT |
+| iMessage sent to lead | CONTACTED |
+| Associate confirms email sent in Gmail | CONTACTED (update from DRAFT) |
+| Lead replies (any channel) | RESPONDED |
+| Test drive / visit scheduled | APPOINTMENT |
+| Deal closed | SOLD |
+| 21-day sequence done, no response | DORMANT |
+| Lead imported from list | NEW |
+| Social media post drafted (Reddit/Twitter) | DRAFTED — not CONTACTED until associate confirms they posted |
 
 ---
 
@@ -68,104 +97,116 @@ ID,Date,Time,Lead Name,Phone,Email,Lead Type,Car Year,Car Make,Car Model,Car Tri
 
 | Status | Meaning |
 |--------|---------|
-| CONTACTED | First outreach sent, no response yet |
-| RESPONDED | Lead replied (any channel) |
-| APPOINTMENT | Test drive or dealership visit scheduled |
+| NEW | Lead added, no outreach yet |
+| DRAFT | Gmail draft created, client iMessage sent — waiting for associate to hit send in Gmail |
+| CONTACTED | Outreach sent (email sent by associate, iMessage delivered) |
+| DRAFTED | Social platform draft produced — associate needs to post it manually |
+| RESPONDED | Lead replied on any channel |
+| APPOINTMENT | Test drive or visit scheduled |
 | SOLD | Deal closed |
-| DORMANT | 21-day sequence completed, no response |
-| NO_RESPONSE | Sent, bounced or confirmed undeliverable |
+| DORMANT | 21-day sequence done, no response |
+| NO_RESPONSE | Confirmed undeliverable / bounced |
 
 ---
 
-## Updating a Lead's Status
+## Draft Creation Confirmation Block
 
-When an associate reports a lead replied, booked, or bought:
+Every time a Gmail draft is created, show this to the associate:
 
-Associate says: "Marcus James replied, he wants to come in Friday"
-
-AI should:
-1. Find the row where Lead Name = Marcus James
-2. Update Status → APPOINTMENT
-3. Update Notes → "Wants to come in Friday [DATE]"
-4. Update Next Follow-Up → day before appointment
-5. Confirm:
 ```
-✅ Marcus James updated → APPOINTMENT
-   Next follow-up reminder: [DATE - 1 day before]
-   ~/car-sales-leads/leads.csv
+✅ Done — here's what just happened:
+
+📧 Gmail draft created: "[EMAIL SUBJECT]"
+   → Open Gmail and hit Send when you're ready
+
+📱 [CLIENT FIRST NAME] got an iMessage: "check your email"
+📱 You got an iMessage on [ASSOCIATE_PHONE]: draft details
+
+📋 Logged to leads.csv:
+   ID: [L00X] | [LEAD NAME] | [YEAR MAKE MODEL]
+   Status: DRAFT | Next follow-up: [DATE + 5 days]
+
+Say "sent" once you've sent it in Gmail and I'll update the tracker.
 ```
 
 ---
 
-## Viewing the Tracker
+## Status Update Confirmation Block
 
-When the associate says "show me my leads" or "what's my pipeline":
+When associate says "sent" / "done" / "sent it":
 
-1. Read `~/car-sales-leads/leads.csv`
-2. Display a clean summary table grouped by Status:
+```
+✅ [LEAD NAME] updated → CONTACTED
+   Email: [SUBJECT]
+   Sent to: [EMAIL]
+   Next follow-up: [DATE] (Day 5 bump)
+   ~/car-sales-leads/leads.csv updated
+```
+
+---
+
+## Viewing the Pipeline
+
+When associate says "show me my leads" / "what's my pipeline" / "show pipeline":
+
+1. Use Desktop Commander `read_file` on `~/car-sales-leads/leads.csv`
+2. Parse all rows
+3. Display grouped by Status:
 
 ```
 📊 LEAD PIPELINE — [TODAY'S DATE]
 ──────────────────────────────────
-🔥 HOT (3)
-   001 | Marcus James | BMW i7 | Emailed 5/12 | Next: 5/17
-   004 | Derrick Brown | 330i | Texted 5/11 | Next: 5/16
-   007 | Janelle Moore | X5 | Emailed 5/10 | Next: 5/15
+🔥 HOT / WARM (N)
+   L001 | Marcus James | BMW i7 | Emailed [DATE] | Next: [DATE]
 
-💰 PAID (2)
-   002 | Chris Williams | M4 | Emailed 5/12 | Next: 5/17
-   006 | Tasha Grant | 5 Series | Texted 5/11 | Next: 5/14
+📨 DRAFT — waiting for you to hit send (N)
+   L003 | Kevin Davis | X5 | Draft created [DATE]
 
-✅ APPOINTMENTS (1)
-   003 | Kevin Davis | X7 | Coming in 5/15
+💰 PAID LEADS (N)
+   L002 | Chris Williams | M4 | Emailed [DATE] | Next: [DATE]
 
-💀 DEAD (5)
+✅ APPOINTMENTS (N)
+   L004 | Janelle Moore | X7 | Coming in [DATE]
+
+🎯 BUYER HUNT / CONQUEST (N)
+   L005 | Reddit u/kevin_fl | SUV ~$15k | iMessage sent [DATE]
+
+💀 DORMANT (N)
    ...
 
-📆 FOLLOW-UPS DUE TODAY:
-   005 | Ray Thomas | i4 | Day 5 bump text due
 ──────────────────────────────────
-Total leads: 11 | Active: 6 | Dormant: 0 | Sold: 0
+Total: [N] | Active: [N] | Sold: [N]
+
+📆 FOLLOW-UPS DUE TODAY:
+   L002 | Chris Williams | M4 | Day 5 bump text due
 ```
 
 ---
 
 ## Follow-Up Due Detection
 
-At the start of every session, check `leads.csv` for any rows where:
-- Status = CONTACTED or RESPONDED
-- Next Follow-Up date = today or earlier
+At the start of every session:
 
-If any are found, surface them first:
+1. Read leads.csv
+2. Find rows where Status = CONTACTED or RESPONDED AND Next Follow-Up ≤ today's date
+3. Surface them first:
 
 ```
-📆 YOU HAVE [N] FOLLOW-UPS DUE TODAY:
+📆 YOU HAVE [N] FOLLOW-UPS DUE:
 
-1. [NAME] — [CAR] — Due: Day [N] [CHANNEL] follow-up
+1. [NAME] — [CAR] — Day [N] [CHANNEL] follow-up
    Last contact: [DATE] ([N] days ago)
-   [Quick action: generate follow-up message?]
 
 Reply with the number to generate that follow-up message now.
 ```
 
 ---
 
-## Batch Status Review
+## File Integrity Rules
 
-If associate says "show me everyone I haven't heard from in 10+ days":
-
-Filter leads.csv where:
-- Status = CONTACTED
-- Date column is 10+ days ago
-
-Display grouped list and offer to generate bulk follow-up messages.
-
----
-
-## Notes on File Handling
-
-- The CSV file should be created at `~/car-sales-leads/leads.csv` if it doesn't exist
-- Always read the file before appending to get the correct next ID
-- When updating a row, read the full file, modify the row in memory, and write back the full file
-- Never delete rows — use DORMANT status instead of removing leads
-- If the file grows large (500+ rows), suggest the associate archive old DORMANT/SOLD leads to a separate `leads-archive.csv`
+- Always read the file before writing — get the real last ID
+- When updating a row, rewrite the entire file (not just the changed row)
+- Never delete rows — use DORMANT instead
+- If file doesn't exist, create it with header row first, then append
+- If file grows past 500 rows, suggest archiving DORMANT/SOLD rows to `leads-archive.csv`
+- Every column must have a value — use empty string for unknown fields, never skip columns

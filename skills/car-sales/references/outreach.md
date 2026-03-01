@@ -87,7 +87,25 @@ When are you free to come see it? I can get you in and out quick — I know your
 
 ## Email Templates
 
-Use email as the follow-up to iMessage OR as the primary channel if that's what the lead prefers. All emails are sent as **HTML via Gmail draft** — always create the draft first, then prompt the associate to send it and confirm back.
+Use email as the follow-up to iMessage OR as the primary channel if that's what the lead prefers. All emails are sent as **HTML via Gmail draft**.
+
+**Two-message flow every time an email is drafted:**
+
+1. **Gmail draft is created** (the full HTML car package email to the client)
+2. **Client gets an iMessage automatically** — a short personal intro from the salesperson telling them to check their email:
+   ```
+   Hey [FIRST NAME]! It's [SALESPERSON] from [DEALERSHIP] — I just sent you something over email about the [YEAR] [MAKE] [MODEL] you were asking about. Check your inbox when you get a sec, I put together the full details for you. 🔑
+   ```
+3. **Associate gets an iMessage automatically** — notifying them the draft is ready and waiting:
+   ```
+   📨 Draft ready: "[EMAIL SUBJECT]"
+   To: [LEAD NAME] ([EMAIL])
+   Car: [YEAR MAKE MODEL] — [PRICE]
+   
+   👉 Open Gmail and hit send when you're ready.
+   ```
+
+The associate reviews the Gmail draft, then sends it manually. The client's intro iMessage goes out automatically so they're already looking for the email.
 
 ---
 

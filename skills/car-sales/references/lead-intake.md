@@ -52,9 +52,13 @@ Once you have the lead info and car details:
 1. Go to `references/outreach.md` to build the message
 2. Show the full draft for review
 3. Wait for associate to approve or edit
-4. Send via iMessage tool (text) or Gmail draft (email)
-5. **Auto-log to tracker** — immediately after send is confirmed, write the lead entry to `~/car-sales-leads/leads.csv` per `references/lead-tracker.md`
-6. Confirm the log to the associate and show the next follow-up date
+4. On approval:
+   - Create the Gmail draft (full HTML email to client)
+   - **Automatically** send the client an iMessage: "Hey [FIRST NAME], check your email — I just sent you the details on the [YEAR MAKE MODEL] 🔑"
+   - **Automatically** send the associate an iMessage: "📨 Draft ready: [SUBJECT] — open Gmail and hit send when ready"
+5. **Auto-log to tracker** — immediately after draft is created, write to `~/car-sales-leads/leads.csv` with Status = DRAFT
+6. Confirm everything to the associate in one summary block
+7. When associate confirms they sent the email, update Status → CONTACTED
 
 ## Single Lead Quick-Add
 
